@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Ticket</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .ticket {
+            border: 2px solid #000;
+            padding: 20px;
+            display: inline-block;
+            text-align: left;
+            margin: 20px auto;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket" id="ticket">
+        <h2>Table Tennis Booking Confirmation</h2>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Tables Booked:</strong> {{ tables }}</p>
+        <p><strong>Date:</strong> {{ date }}</p>
+        <p><strong>From :</strong> {{ from_time }}</p>
+        <p><strong>To:</strong> {{ to_time }}</p>
+       
+    </div>
+
+    <button onclick="printTicket()">Print Ticket</button>
+
+    <script>
+        function printTicket() {
+            const button = document.querySelector("button");
+            button.classList.add("hidden"); 
+            window.print();
+            button.classList.remove("hidden"); 
+        }
+    </script>
+</body>
+</html>

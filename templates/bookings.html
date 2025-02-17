@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Tennis Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        input, select {
+            padding: 5px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Book a Table</h2>
+        <p>Welcome, <strong>{{ name }}</strong>! Select your booking date first.</p>
+
+        <form action="/bookings" method="POST">
+            <!-- Select Date (Only allows up to 2 days in advance) -->
+            <label for="date">Select Date:</label>
+            <input type="date" name="date" id="date" required>
+
+            <!-- Select Time Slot (Only from 6 AM - 6 PM) -->
+            <div id="timeSlotContainer" class="hidden">
+                <label for="time">Select Time:</label>
+                <select name="time" id="time">
+                    {% for hour in range(6, 18) %}
+                        <option value="{{ hour }}">{{ hour }}:00</option>
+                       
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Table Selection (Only shown after time selection) -->
+            <div id="tableContainer" class="hidden">
+                <fieldset>
+                    <legend>Available Tables</legend>
+                    {% for table in empty_tables %}
+                        <label>
+                            <input type="checkbox" name="tables" value="{{ table }}"> Table {{ table }}
+                        </label><br>
+                    {% endfor %}
+                </fieldset>
+
+                <label for="hours">Hours:</label>
+                <input type="number" name="hours" id="hours" min="1" value="1" required>
+            </div>
+
+            <br><button type="submit" id="payButton" class="hidden">Pay</button>
+        </form>
+    </div>
+
+    <script>
+        // Set min and max date to allow booking only up to 2 days ahead
+        const dateInput = document.getElementById("date");
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setDate(today.getDate() + 2);
+
+        dateInput.min = today.toISOString().split("T")[0];
+        dateInput.max = maxDate.toISOString().split("T")[0];
+
+        // Show time selection after picking a date
+        dateInput.addEventListener("change", () => {
+            document.getElementById("timeSlotContainer").classList.remove("hidden");
+        });
+
+        // Show table selection after picking a time
+        document.getElementById("time").addEventListener("change", () => {
+            document.getElementById("tableContainer").classList.remove("hidden");
+            document.getElementById("payButton").classList.remove("hidden");
+        });
+    </script>
+
+</body>
+</html>
