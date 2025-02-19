@@ -2,16 +2,23 @@ from api.users import users
 from api.admin import admin
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash
-
 import werkzeug
 import qrcode
+import PIL
+import os
+from random import randint
+
+
+
 app=Flask(__name__)
 app.secret_key='secret'
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
+@app.context_processor
+def inject_random():
+    return {"random": lambda: randint(1, 10000)}
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -67,6 +74,27 @@ def bookings():
        
         for tableno in tables:
              Admin.update_table_status(int(tableno),'booked',date_booked,int(from_time),int(from_time)+int(hours))
+
+
+
+        # Ensure the images directory exists
+        image_dir = "static/images"
+        os.makedirs(image_dir, exist_ok=True)
+        
+        # Booking details
+        details = f"""Name: {name}
+        Tables booked: {', '.join(tables)}
+        Date: {date_booked}
+        From: {from_time}
+        To: {int(from_time) + int(hours)}"""
+
+        # Generate and save QR code
+        image = qrcode.make(details)
+        image_path = os.path.join(image_dir, f"{name}.jpg")
+        image.save(image_path)
+
+        print(f"QR code saved at: {image_path}")
+
         
         return render_template('ticket.html',name=name,tables=' '.join(tables),date=date_booked,from_time=from_time,to_time=int(from_time)+int(hours))
     

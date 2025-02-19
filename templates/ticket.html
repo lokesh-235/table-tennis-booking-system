@@ -19,6 +19,11 @@
         .hidden {
             display: none;
         }
+        .qrcode{
+            border: 2px solid black;
+            border-radius: 10px;
+
+        }
     </style>
 </head>
 <body>
@@ -29,10 +34,14 @@
         <p><strong>Date:</strong> {{ date }}</p>
         <p><strong>From :</strong> {{ from_time }}</p>
         <p><strong>To:</strong> {{ to_time }}</p>
-       
+        <img class="qrcode" src="{{ url_for('static', filename='images/' + name + '.jpg') }}?v={{ random() }}" alt="QR Code" width="100px" height="100px">
+
     </div>
 
     <button onclick="printTicket()">Print Ticket</button>
+    <br>
+    
+
 
     <script>
         function printTicket() {
